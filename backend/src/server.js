@@ -28,10 +28,13 @@ mongoose
   })
   .then(() => {
     console.log("MongoDB connected");
-    app.listen(PORT, () =>
-      console.log(`Server running on http://192.168.1.3:${PORT}`)
-    );
+    // app.listen(PORT, () =>
+    //   console.log(`Server running on http://192.168.1.3:${PORT}`)
+    // ); // not working on Vercel
   })
   .catch((err) => {
     console.error("Mongo connect error", err);
   });
+
+// ✅ Vercel ke liye `app.listen` hata do aur sirf export karo
+module.exports = app;
