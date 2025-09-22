@@ -1,5 +1,3 @@
-import AddCategory from "./components/AddCategory";
-import AddProduct from "./components/AddProduct";
 import ProductsPage from "./pages/ProductsPage";
 import styled from "styled-components";
 import { Toaster } from "react-hot-toast";

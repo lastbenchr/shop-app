@@ -79,7 +79,10 @@ export default function ProductsPage() {
       ) : (
         <>
           <ProductsTable
-            products={products.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)}
+            products={products.slice(
+              (currentPage - 1) * itemsPerPage,
+              currentPage * itemsPerPage
+            )}
             onEdit={handleEdit}
             onDelete={(id) => setDeleteId(id)}
           />
@@ -91,10 +94,13 @@ export default function ProductsPage() {
               Previous
             </PageButton>
             <PageInfo>
-              Page {currentPage} of {Math.ceil(products.length / itemsPerPage) || 1}
+              Page {currentPage} of{" "}
+              {Math.ceil(products.length / itemsPerPage) || 1}
             </PageInfo>
             <PageButton
-              disabled={currentPage >= Math.ceil(products.length / itemsPerPage)}
+              disabled={
+                currentPage >= Math.ceil(products.length / itemsPerPage)
+              }
               onClick={() => setCurrentPage((prev) => prev + 1)}
             >
               Next
@@ -112,7 +118,11 @@ export default function ProductsPage() {
         }}
         title={!editProduct ? "Add Product" : "Edit Product"}
       >
-        <AddProduct editProduct={editProduct} onSuccess={handleSuccess} />
+        <AddProduct
+          editProduct={editProduct}
+          onSuccess={handleSuccess}
+          products={products}
+        />
       </Modal>
 
       {/* Delete Confirmation Modal */}

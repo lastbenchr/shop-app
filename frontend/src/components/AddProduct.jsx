@@ -6,15 +6,12 @@ import { Pencil, Trash2 } from "lucide-react";
 import Modal from "./Modal";
 
 /* Component */
-export default function AddProduct({ editProduct, onSuccess }) {
+export default function AddProduct({ editProduct, onSuccess, products }) {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [cats, setCats] = useState([]);
   const [selected, setSelected] = useState([]);
-  const [msg, setMsg] = useState("");
-  const [isError, setIsError] = useState(false);
   const [newCat, setNewCat] = useState("");
-  const [catMsg, setCatMsg] = useState("");
   const [catBusyId, setCatBusyId] = useState(null);
   const [confirmDeleteCat, setConfirmDeleteCat] = useState(null);
   const [editingCat, setEditingCat] = useState(null);
@@ -48,6 +45,14 @@ export default function AddProduct({ editProduct, onSuccess }) {
         (c.name || "").trim().toLowerCase() === trimmed.toLowerCase();
       return editingCat ? c._id !== editingCat._id && same : same;
     });
+    // If editing, and name is unchanged, allow update (no error, but don't call API)
+    if (editingCat) {
+      const original = (editingCat.name || "").trim().toLowerCase();
+      if (trimmed.toLowerCase() === original) {
+        toast.error("No changes detected");
+        return;
+      }
+    }
     if (exists) {
       toast.error("Category already exists");
       return;
@@ -99,6 +104,7 @@ export default function AddProduct({ editProduct, onSuccess }) {
       setSelected((prev) => prev.filter((id) => id !== cat._id));
       const catsRes = await api.get("/categories");
       setCats(catsRes.data);
+      setEditingCat(null);
     } catch (err) {
       toast.error(err.response?.data?.error || "❌ Error deleting category");
     } finally {
@@ -111,6 +117,21 @@ export default function AddProduct({ editProduct, onSuccess }) {
     // Frontend validations with toasts
     if (!name.trim()) {
       toast.error("Please enter product name");
+      return;
+    }
+    // Product name duplicate check (case-insensitive, trimmed)
+    const trimmedName = name.trim().toLowerCase();
+    const exists = products.some((p) => {
+      const same = (p.name || "").trim().toLowerCase() === trimmedName;
+      return editProduct ? p._id !== editProduct._id && same : same;
+    });
+    if (exists) {
+      toast.error("Product already exists");
+      return;
+    }
+    // Category mandatory validation
+    if (!selected.length) {
+      toast.error("Please select at least one category");
       return;
     }
     const priceNum = Number(price);
@@ -232,11 +253,7 @@ export default function AddProduct({ editProduct, onSuccess }) {
             onChange={(e) => setNewCat(e.target.value)}
             placeholder={editingCat ? "Edit category name" : "Add new category"}
           />
-          <Button
-            type="button"
-            onClick={addCategory}
-            disabled={editingCat ? catBusyId === editingCat._id : false}
-          >
+          <Button type="button" onClick={addCategory}>
             {editingCat ? "Save" : "Add"}
           </Button>
           {editingCat && (
@@ -252,13 +269,11 @@ export default function AddProduct({ editProduct, onSuccess }) {
             </CancelButton>
           )}
         </CategoryRow>
-        {catMsg && <Message style={{ marginTop: "4px" }}>{catMsg}</Message>}
       </CheckboxGroup>
 
       <Button type="submit">
         {!editProduct ? "Create Product" : "Update Product"}
       </Button>
-      {msg && <Message error={isError}>{msg}</Message>}
 
       {/* Confirm Delete Modal */}
       <Modal
@@ -511,14 +526,4 @@ const Button = styled.button`
   &:active {
     transform: translateY(1px);
   }
-`;
-
-const Message = styled.p`
-  margin-top: 10px;
-  font-size: 15px;
-  font-weight: 500;
-  color: ${(props) => (props.error ? "#ef4444" : "#16a34a")};
-  background: ${(props) => (props.error ? "#fee2e2" : "#dcfce7")};
-  padding: 8px 12px;
-  border-radius: 8px;
 `;

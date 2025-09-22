@@ -20,6 +20,16 @@ router.post("/", async (req, res) => {
       }
     }
 
+    // Check for duplicate/similar name (case-insensitive, partial match)
+    const similarProduct = await Product.findOne({
+      name: { $regex: new RegExp(name, "i") },
+    });
+    if (similarProduct) {
+      return res
+        .status(400)
+        .json({ error: "Product with similar name exists" });
+    }
+
     const product = new Product({ name, price, categories });
     await product.save();
     await product.populate("categories", "name"); // populate for response

@@ -24,6 +24,7 @@ export default function ProductsTable({
       <Table>
         <Thead>
           <tr>
+            <Th style={{ width: 60, textAlign: "center" }}>#</Th>
             <Th>Name</Th>
             <Th>Price</Th>
             <Th>Categories</Th>
@@ -32,19 +33,20 @@ export default function ProductsTable({
         </Thead>
 
         <Tbody>
-          {products.map((p) => (
+          {products.map((p, idx) => (
             <Tr key={p._id}>
+              <Td style={{ textAlign: "center", fontWeight: 600 }}>
+                {idx + 1}
+              </Td>
               <Td>
                 <NameCell>{p.name}</NameCell>
                 <div style={{ fontSize: 12, color: "#475569" }}>
                   ID: {p._id.slice(-6)}
                 </div>
               </Td>
-
               <Td>
                 <Price>₹{Number(p.price).toLocaleString("en-IN")}</Price>
               </Td>
-
               <Td>
                 <CategoriesWrap>
                   {p.categories && p.categories.length ? (
@@ -58,7 +60,6 @@ export default function ProductsTable({
                   )}
                 </CategoriesWrap>
               </Td>
-
               <Td style={{ textAlign: "center" }}>
                 <ActionGroup>
                   <EditButton
@@ -67,7 +68,6 @@ export default function ProductsTable({
                   >
                     Edit
                   </EditButton>
-
                   <DeleteButton
                     onClick={() => onDelete(p._id)}
                     aria-label={`Delete ${p.name}`}
