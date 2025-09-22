@@ -6,7 +6,7 @@ import { Pencil, Trash2 } from "lucide-react";
 import Modal from "./Modal";
 
 /* Component */
-export default function AddProduct({ editProduct }) {
+export default function AddProduct({ editProduct, onSuccess }) {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [cats, setCats] = useState([]);
@@ -30,7 +30,7 @@ export default function AddProduct({ editProduct }) {
     if (editProduct) {
       setName(editProduct.name || "");
       setPrice(editProduct.price?.toString() || "");
-      setSelected(editProduct.categories || []);
+      setSelected(editProduct.categories?.map((c) => c._id) || []);
     }
   }, [editProduct]);
 
@@ -151,6 +151,7 @@ export default function AddProduct({ editProduct }) {
       setName("");
       setPrice("");
       setSelected([]);
+      if (onSuccess) onSuccess();
     } catch (err) {
       toast.error(err.response?.data?.error || "❌ Error");
     }
