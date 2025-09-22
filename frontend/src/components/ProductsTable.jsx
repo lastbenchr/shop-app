@@ -31,23 +31,25 @@ export default function ProductsTable({
             <Th style={{ width: 160, textAlign: "center" }}>Action</Th>
           </tr>
         </Thead>
-
         <Tbody>
           {products.map((p, idx) => (
             <Tr key={p._id}>
-              <Td style={{ textAlign: "center", fontWeight: 600 }}>
+              <Td
+                data-label="#"
+                style={{ textAlign: "center", fontWeight: 600 }}
+              >
                 {idx + 1}
               </Td>
-              <Td>
+              <Td data-label="Name">
                 <NameCell>{p.name}</NameCell>
                 <div style={{ fontSize: 12, color: "#475569" }}>
                   ID: {p._id.slice(-6)}
                 </div>
               </Td>
-              <Td>
+              <Td data-label="Price">
                 <Price>₹{Number(p.price).toLocaleString("en-IN")}</Price>
               </Td>
-              <Td>
+              <Td data-label="Categories">
                 <CategoriesWrap>
                   {p.categories && p.categories.length ? (
                     p.categories.map((c) => (
@@ -60,7 +62,7 @@ export default function ProductsTable({
                   )}
                 </CategoriesWrap>
               </Td>
-              <Td style={{ textAlign: "center" }}>
+              <Td data-label="Action" style={{ textAlign: "center" }}>
                 <ActionGroup>
                   <EditButton
                     onClick={() => onEdit(p._id)}
@@ -89,13 +91,17 @@ export default function ProductsTable({
 const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
-  min-width: 720px; /* makes table scroll horizontally on very small screens */
 `;
 
+/* Table Head */
 const Thead = styled.thead`
   background: linear-gradient(90deg, #f8fafc, #f1f5f9);
+  position: sticky;
+  top: 0;
+  z-index: 2; /* header scroll ke upar rahega */
 `;
 
+/* Head Cell */
 const Th = styled.th`
   text-align: left;
   font-size: 14px;
@@ -103,8 +109,10 @@ const Th = styled.th`
   color: #0f172a;
   font-weight: 600;
   border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+  background: inherit; /* sticky ke liye background maintain */
 `;
 
+/* Body */
 const Tbody = styled.tbody``;
 
 const Tr = styled.tr`

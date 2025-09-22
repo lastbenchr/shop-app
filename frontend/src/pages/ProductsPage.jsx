@@ -62,17 +62,10 @@ export default function ProductsPage() {
 
   return (
     <div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "20px",
-        }}
-      >
-        <h2>Products</h2>
+      <HeaderRow>
+        <ResponsiveHeading>Products</ResponsiveHeading>
         <Button38 onClick={() => setShowAdd(true)}>+ Add Product</Button38>
-      </div>
+      </HeaderRow>
 
       {loading ? (
         <p>Loading...</p>
@@ -220,4 +213,21 @@ const PageButton = styled.button`
 const PageInfo = styled.span`
   font-size: 14px;
   color: #334155;
+`;
+
+const ResponsiveHeading = styled.h2`
+  color: #3730a3; /* deep indigo, visually appealing */
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
+  @media (max-width: 600px) {
+    font-size: 1.4rem;
+  }
+`;
+
+const HeaderRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
 `;
